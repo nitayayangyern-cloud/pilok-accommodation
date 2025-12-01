@@ -474,37 +474,51 @@
         setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
         init();
         
-        // ========== AUTO-SYNC REALTIME ==========
-        const DB_URL = 'https://pilok-accommodation-default-rtdb.asia-southeast1.firebasedatabase.app/data.json';
+        // ========== AUTO-SYNC REALTIME (PUBLIC - ไม่ปลอดภัย) ==========
+        const SYNC_KEY = 'pilok-data-v1';
+        const STORAGE_URL = 'https://kvdb.io/J8kNqF5wZx6WvRm4Lpz3X8';
         
         // โหลดข้อมูลจาก Cloud
         async function loadCloud() {
             try {
-                const res = await fetch(DB_URL);
-                const cloudData = await res.json();
-                if (cloudData && cloudData.length > 0) {
-                    data = cloudData;
-                    render();
-                    console.log('✅ Sync จาก Cloud');
+                const res = await fetch(`${STORAGE_URL}/${SYNC_KEY}`);
+                if (res.ok) {
+                    const cloudData = await res.json();
+                    if (cloudData && Array.isArray(cloudData) && cloudData.length > 0) {
+                        const localTime = parseInt(localStorage.getItem('lastSync') || '0');
+                        const cloudTime = parseInt(cloudData[0]?._sync || '0');
+                        
+                        if (cloudTime > localTime) {
+                            data = cloudData;
+                            render();
+                            localStorage.setItem('lastSync', cloudTime.toString());
+                            console.log('✅ Sync จาก Cloud');
+                        }
+                    }
                 }
             } catch (e) {
-                console.log('ใช้ Local data');
+                console.log('⚠️ ใช้ข้อมูล Local');
             }
         }
         
         // บันทึกไป Cloud
         async function saveCloud() {
             try {
-                const res = await fetch(DB_URL, {
-                    method: 'PUT',
+                if (!data[0]._sync) data[0]._sync = 0;
+                data[0]._sync = Date.now();
+                
+                const res = await fetch(`${STORAGE_URL}/${SYNC_KEY}`, {
+                    method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
+                
                 if (res.ok) {
+                    localStorage.setItem('lastSync', data[0]._sync.toString());
                     console.log('✅ Sync ไป Cloud');
                 }
             } catch (e) {
-                console.log('Sync ล้มเหลว');
+                console.log('⚠️ บันทึก Local อย่างเดียว');
             }
         }
         
