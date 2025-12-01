@@ -1,537 +1,294 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ที่พัก ปิล็อก</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
-            padding-bottom: 60px;
-        }
-        .header {
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-        .subtitle { color: #737373; font-size: 13px; }
-        .toolbar {
-            display: flex;
-            gap: 8px;
-            padding: 12px;
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 66px;
-            z-index: 99;
-        }
-        .btn {
-            padding: 10px 14px;
-            border: 1px solid #e5e5e5;
-            background: white;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background: #667eea; color: white; border-color: #667eea; }
-        .btn.active { background: #667eea; color: white; border-color: #667eea; }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 12px;
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
-        }
-        .stat-card {
-            background: #fafafa;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .stat-label { font-size: 11px; color: #737373; margin-bottom: 4px; }
-        .stat-value { font-size: 24px; font-weight: 600; }
-        .content { padding: 12px; }
-        .card {
-            background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .card.full { opacity: 0.6; border-left: 3px solid #ef4444; }
-        .card.interested { border-left: 3px solid #10b981; }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            gap: 12px;
-        }
-        .card-title {
-            font-size: 15px;
-            font-weight: 600;
-            flex: 1;
-            line-height: 1.4;
-        }
-        .card-actions {
-            display: flex;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-        label {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            user-select: none;
-        }
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-        .info-item {
-            margin-bottom: 10px;
-        }
-        .info-label {
-            font-size: 11px;
-            font-weight: 500;
-            color: #737373;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-        input[type="text"],
-        input[type="tel"],
-        input[type="url"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e5e5e5;
-            border-radius: 6px;
-            font-size: 14px;
-            background: #fafafa;
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-        }
-        .phone-display {
-            padding: 10px;
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            border-radius: 6px;
-            color: #15803d;
-            font-weight: 500;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-        }
-        textarea { resize: vertical; min-height: 60px; }
-        .hidden { display: none !important; }
-        .upload-btn {
-            padding: 10px 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .upload-btn:active { transform: scale(0.95); }
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .gallery-item {
-            position: relative;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid #e5e5e5;
-        }
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .gallery-item .delete-img {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>ที่พัก ปิล็อก สังขละบุรี</h1>
-        <div class="subtitle">จัดการข้อมูลที่พัก 60 แห่ง</div>
-    </div>
-    
-    <div class="toolbar">
-        <button class="btn btn-primary" onclick="save()">💾 บันทึก</button>
-        <button class="btn" onclick="exportData()">📤 Export</button>
-        <button class="btn" onclick="document.getElementById('importFile').click()">📥 Import</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
-        <button class="btn" onclick="exp()">📋 CSV</button>
-        <div style="flex: 1"></div>
-        <button class="btn active" id="fAll" onclick="flt('all')">ทั้งหมด</button>
-        <button class="btn" id="fAvail" onclick="flt('avail')">ว่าง</button>
-        <button class="btn" id="fFull" onclick="flt('full')">เต็ม</button>
-        <button class="btn" id="fInt" onclick="flt('int')">จอง</button>
-    </div>
-    
-    <div class="stats">
-        <div class="stat-card">
-            <div class="stat-label">ทั้งหมด</div>
-            <div class="stat-value" id="sTotal">60</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">ว่าง</div>
-            <div class="stat-value" style="color:#10b981" id="sAvail">60</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">เต็ม</div>
-            <div class="stat-value" style="color:#ef4444" id="sFull">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">จอง</div>
-            <div class="stat-value" style="color:#f59e0b" id="sInt">0</div>
-        </div>
-    </div>
-    
-    <div class="content">
-        <div id="list"></div>
-    </div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ที่พัก ปิล็อก สังขละบุรี</title>
 
-    <script>
-        const ACCOMMODATIONS = [
-            {i:1,n:"วิลล่าปิล็อก",p:"092-599-2669"},{i:2,n:"ณัตตะ-เอ่ง-ต่อง-เฮ้าส์",p:"081-942-3057"},
-            {i:3,n:"อื่อต่อง โฮมสเตย์",p:"092-249-1915"},{i:4,n:"บ้านซาคุริต โฮมสเตย์",p:"086-170-3410"},
-            {i:5,n:"ทางช้างเผือกโฮม",p:"099-332-4934"},{i:6,n:"ปิล็อกพอเพลิน",p:"081-995-5466"},
-            {i:7,n:"สวีทอื่อต่อง",p:"085-542-6623"},{i:8,n:"My Home",p:"063-183-4056"},
-            {i:9,n:"กัปตันปิล็อก",p:"089-154-0904"},{i:10,n:"บ้านน้ำทิพย์",p:"065-537-6371"},
-            {i:11,n:"กลิ่นไอหมอก คันทรีวิว",p:"096-343-3299"},{i:12,n:"Hill House My Loft",p:"080-781-5702"},
-            {i:13,n:"บ้านเอี่ยวย้วน โฮมสเตย์",p:"065-693-5930"},{i:14,n:"บ้านเลขที่ 9 โฮมสเตย์",p:"084-077-2181"},
-            {i:15,n:"ปิล็อกเทอเรซ",p:"098-518-7888"},{i:16,n:"มังกรลาบา โฮมสเตย์",p:"097-030-3888"},
-            {i:17,n:"วัน วัน โฮมสเตย์",p:"065-968-5126"},{i:18,n:"บ้านห้องแถวโฮมสเตย์",p:"062-363-9128"},
-            {i:19,n:"บ้านฉันปิล็อกโฮมสเตย์",p:"081-116-4578"},{i:20,n:"ลมหนาวโฮมสเตย์",p:"097-085-8052"},
-            {i:21,n:"บ้านกลางหมอก",p:"084-079-2565"},{i:22,n:"บ้านยายกะเหรี่ยง",p:"095-249-3935"},
-            {i:23,n:"บ้านมุ่หน่อโฮมสเตย์",p:"083-155-0636"},{i:24,n:"อิ่มเดือน เฮ้าส์ & แคมป์ปิ้ง",p:"065-552-7994"},
-            {i:25,n:"ไททาว",p:"061-332-8074"},{i:26,n:"ต้นตาลโฮมสเตย์ @ ปิล็อก",p:"092-988-7339"},
-            {i:27,n:"ปิล็อกโฮมสเตย์",p:"086-798-5863"},{i:28,n:"บ้านเอี่ยวขวัญ โฮมสเตย์",p:"065-693-5930"},
-            {i:29,n:"บ้านมะขี่น",p:"082-089-6391"},{i:30,n:"บ้านตาพล ยายทิพย์ วิลเลจ",p:"098-403-9946"},
-            {i:31,n:"โกโก้ โฮมสเตย์",p:"085-242-3908"},{i:32,n:"Green House",p:"098-554-4742"},
-            {i:33,n:"Were House",p:"080-761-3574"},{i:34,n:"Say Hi",p:"080-056-9734"},
-            {i:35,n:"สุวรรณวงค์โฮมสเตย์",p:"092-549-7098"},{i:36,n:"บ้านริมดอย",p:"088-455-3823"},
-            {i:37,n:"ต้นตาลโฮมสเตย์",p:"092-988-7339"},{i:38,n:"บ้านคุณพ่อ",p:"061-350-8835"},
-            {i:39,n:"บ้านน้ำค้าง",p:"065-690-5848"},{i:40,n:"บ้านป้าปุยมุตลาดคดิ่ง",p:"061-295-6299"},
-            {i:41,n:"ทินกรโฮมสเตย์",p:"086-170-3410"},{i:42,n:"บ้านในเหมืองโฮมสเตย์",p:"063-896-3561"},
-            {i:43,n:"เอกโฮมสเตย์",p:"087-995-4229"},{i:44,n:"อีปุริธารา",p:"095-305-9036"},
-            {i:45,n:"ไม้น้ำ โฮมสเตย์ ปิล็อก",p:"063-662-6397"},{i:46,n:"จะหน่อ โฮมสเตย์",p:"093-127-2361"},
-            {i:47,n:"Vela Pilok โฮมสเตย์",p:"061-041-7371"},{i:48,n:"บ้านปิล๊อกวิว",p:""},
-            {i:49,n:"บ้านอีต่องริมน้ำ",p:""},{i:50,n:"Baan Pilok & Camping",p:""},
-            {i:51,n:"บ้านริมธาร ปิล็อก",p:""},{i:52,n:"บ้านสายหมอก",p:""},
-            {i:53,n:"บ้านพุดซ้อน ปิล็อก",p:""},{i:54,n:"บ้านโอโซน ปิล็อก",p:""},
-            {i:55,n:"บ้านม่านหมอก ปิล็อก",p:""},{i:56,n:"บ้านหนาวจัง โฮมสเตย์",p:""},
-            {i:57,n:"บ้านชมวิว อีต่อง",p:""},{i:58,n:"บ้านพักป้าแป๊ด ปิล็อก",p:""},
-            {i:59,n:"บ้านไม้สน ปิล็อก",p:""},{i:60,n:"บ้านขุนเขา โฮมสเตย์ ปิล็อก",p:""}
-        ];
-        
-        let data = [];
-        let cf = 'all';
-        
-        function init() {
-            const s = localStorage.getItem('pilokData');
-            if (s) {
-                data = JSON.parse(s);
-            } else {
-                data = ACCOMMODATIONS.map(d => ({...d, p2:'', fb:'', l:'', m:'', f:false, t:false, no:'', imgs:[]}));
-            }
-            render();
-        }
-        
-        function save() {
-            localStorage.setItem('pilokData', JSON.stringify(data));
-            saveCloud(); // บันทึกไป Cloud ด้วย
-            alert('✅ บันทึกแล้ว (Sync ทันที)');
-        }
-        
-        function exportData() {
-            const dataStr = JSON.stringify(data, null, 2);
-            const blob = new Blob([dataStr], {type: 'application/json'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `ที่พักปิล็อก_ข้อมูล_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            alert('✅ Export สำเร็จ! ส่งไฟล์ให้เพื่อนเพื่อ Sync ข้อมูล');
-        }
-        
-        function importData(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (confirm(`Import ข้อมูล ${imported.length} รายการ?\n\n⚠️ ข้อมูลเดิมจะถูกแทนที่`)) {
-                        data = imported;
-                        localStorage.setItem('pilokData', JSON.stringify(data));
-                        render();
-                        alert('✅ Import สำเร็จ! ข้อมูล Sync แล้ว');
-                    }
-                } catch (e) {
-                    alert('❌ ไฟล์ไม่ถูกต้อง');
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        function upd(i, k, v) {
-            const x = data.find(d => d.i === i);
-            if (x) x[k] = v;
-        }
-        
-        function tgFull(i) {
-            const x = data.find(d => d.i === i);
-            if (x) { x.f = !x.f; render(); }
-        }
-        
-        function tgInt(i) {
-            const x = data.find(d => d.i === i);
-            if (x) { x.t = !x.t; render(); }
-        }
-        
-        function flt(f) {
-            cf = f;
-            document.querySelectorAll('.toolbar .btn').forEach(b => b.classList.remove('active'));
-            const ids = {all: 'fAll', avail: 'fAvail', full: 'fFull', int: 'fInt'};
-            document.getElementById(ids[f]).classList.add('active');
-            render();
-        }
-        
-        function render() {
-            const fd = data.filter(d => {
-                if (cf === 'avail') return !d.f;
-                if (cf === 'full') return d.f;
-                if (cf === 'int') return d.t;
-                return true;
-            });
-            
-            document.getElementById('list').innerHTML = fd.map(d => {
-                const cls = d.f ? 'full' : (d.t ? 'interested' : '');
-                const tel = (d.p || '').replace(/[-\s\/]/g, '');
-                const tel2 = (d.p2 || '').replace(/[-\s\/]/g, '');
-                
-                return `<div class="card ${cls}">
-                    <div class="card-header">
-                        <div class="card-title">${d.i}. ${d.n}</div>
-                        <div class="card-actions">
-                            <label><input type="checkbox" ${d.f?'checked':''} onchange="tgFull(${d.i})"> เต็ม</label>
-                            <label><input type="checkbox" ${d.t?'checked':''} onchange="tgInt(${d.i})"> จอง</label>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">📞 เบอร์โทร 1 ${d.p ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'p\',\'\');render()">✏️ แก้ไข</button>' : ''}</div>
-                        ${d.p ? '<a href="tel:'+tel+'" class="phone-display">'+d.p+'</a>' : '<input type="tel" placeholder="กรอกเบอร์" value="'+(d.p||'')+'" onchange="upd('+d.i+',\'p\',this.value)">'}
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">📞 เบอร์โทร 2 ${d.p2 ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'p2\',\'\');render()">✏️ แก้ไข</button>' : ''}</div>
-                        ${d.p2 && d.p2.trim() ? '<a href="tel:'+tel2+'" class="phone-display">'+d.p2+'</a>' : '<input type="tel" placeholder="เบอร์สำรอง" value="'+(d.p2||'')+'" onchange="upd('+d.i+',\'p2\',this.value)">'}
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">📘 Facebook ${d.fb ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'fb\',\'\');render()">× ลบ</button>' : ''}</div>
-                        <input type="url" placeholder="facebook.com/..." value="${d.fb||''}" onchange="upd(${d.i},'fb',this.value)">
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">💬 LINE ID ${d.l ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'l\',\'\');render()">× ลบ</button>' : ''}</div>
-                        <input type="text" placeholder="@lineid" value="${d.l||''}" onchange="upd(${d.i},'l',this.value)">
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">🗺️ Google Maps ${d.m ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'m\',\'\');render()">× ลบ</button>' : ''}</div>
-                        <input type="url" placeholder="https://maps.app.goo.gl/..." value="${d.m||''}" onchange="upd(${d.i},'m',this.value)">
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">📝 หมายเหตุ</div>
-                        <textarea placeholder="ราคา, ติดต่อแล้ว..." onchange="upd(${d.i},'no',this.value)">${d.no||''}</textarea>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">📷 รูปภาพ (สูงสุด 5 รูป)</div>
-                        <input type="file" id="file-${d.i}" accept="image/*" multiple style="display:none" onchange="uploadImg(${d.i}, this.files)">
-                        <button class="upload-btn" onclick="document.getElementById('file-${d.i}').click()">
-                            📸 เลือกรูป
-                        </button>
-                        <div class="gallery" id="gallery-${d.i}">
-                            ${(d.imgs || []).map((img, idx) => `
-                                <div class="gallery-item">
-                                    <img src="${img}" alt="รูปที่ ${idx + 1}">
-                                    <button class="delete-img" onclick="delImg(${d.i}, ${idx})">×</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-            
-            const fc = data.filter(d => d.f).length;
-            const ic = data.filter(d => d.t).length;
-            document.getElementById('sFull').textContent = fc;
-            document.getElementById('sAvail').textContent = data.length - fc;
-            document.getElementById('sInt').textContent = ic;
-        }
-        
-        function exp() {
-            let csv = '\ufeffลำดับ,ชื่อ,สถานะ,จอง,เบอร์1,เบอร์2,Facebook,LINE,Maps,หมายเหตุ\n';
-            data.forEach(d => {
-                csv += `${d.i},"${d.n}",${d.f?'เต็ม':'ว่าง'},${d.t?'ใช่':''},"${d.p||''}","${d.p2||''}","${d.fb||''}","${d.l||''}","${d.m||''}","${(d.no||'').replace(/"/g,'""')}"\n`;
-            });
-            const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `ที่พักปิล็อก_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
-        }
-        
-        function uploadImg(id, files) {
-            const x = data.find(d => d.i === id);
-            if (!x) return;
-            
-            if (!x.imgs) x.imgs = [];
-            
-            // จำกัด 5 รูป
-            const remaining = 5 - x.imgs.length;
-            if (remaining <= 0) {
-                alert('อัปโหลดได้สูงสุด 5 รูป');
-                return;
-            }
-            
-            const toUpload = Math.min(files.length, remaining);
-            let loaded = 0;
-            
-            for (let i = 0; i < toUpload; i++) {
-                const file = files[i];
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('ไฟล์ต้องไม่เกิน 2MB');
-                    continue;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    x.imgs.push(e.target.result);
-                    loaded++;
-                    if (loaded === toUpload) {
-                        render();
-                        save();
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        
-        function delImg(id, idx) {
-            const x = data.find(d => d.i === id);
-            if (x && x.imgs) {
-                x.imgs.splice(idx, 1);
-                render();
-                save();
-            }
-        }
-        
-        setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
-        init();
-        
-        // ========== AUTO-SYNC REALTIME (PUBLIC - ไม่ปลอดภัย) ==========
-        const SYNC_KEY = 'pilok-data-v1';
-        const STORAGE_URL = 'https://kvdb.io/J8kNqF5wZx6WvRm4Lpz3X8';
-        
-        // โหลดข้อมูลจาก Cloud
-        async function loadCloud() {
-            try {
-                const res = await fetch(`${STORAGE_URL}/${SYNC_KEY}`);
-                if (res.ok) {
-                    const cloudData = await res.json();
-                    if (cloudData && Array.isArray(cloudData) && cloudData.length > 0) {
-                        const localTime = parseInt(localStorage.getItem('lastSync') || '0');
-                        const cloudTime = parseInt(cloudData[0]?._sync || '0');
-                        
-                        if (cloudTime > localTime) {
-                            data = cloudData;
-                            render();
-                            localStorage.setItem('lastSync', cloudTime.toString());
-                            console.log('✅ Sync จาก Cloud');
-                        }
-                    }
-                }
-            } catch (e) {
-                console.log('⚠️ ใช้ข้อมูล Local');
-            }
-        }
-        
-        // บันทึกไป Cloud
-        async function saveCloud() {
-            try {
-                if (!data[0]._sync) data[0]._sync = 0;
-                data[0]._sync = Date.now();
-                
-                const res = await fetch(`${STORAGE_URL}/${SYNC_KEY}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
-                });
-                
-                if (res.ok) {
-                    localStorage.setItem('lastSync', data[0]._sync.toString());
-                    console.log('✅ Sync ไป Cloud');
-                }
-            } catch (e) {
-                console.log('⚠️ บันทึก Local อย่างเดียว');
-            }
-        }
-        
-        // Auto-load ทุก 10 วินาที
-        setInterval(loadCloud, 10000);
-        
-        // Auto-save ทุก 30 วินาที
-        setInterval(() => {
-            localStorage.setItem('pilokData', JSON.stringify(data));
-            saveCloud();
-        }, 30000);
-        
-        // โหลดครั้งแรก
-        setTimeout(loadCloud, 2000);
-    </script>
+<style>
+/* ————— STYLE เดิมของมึง (ไม่ตัดออก) ————— */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fafafa;color:#1a1a1a;padding-bottom:60px;}
+.header{background:white;border-bottom:1px solid #e5e5e5;padding:16px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+h1{font-size:20px;font-weight:600;margin-bottom:4px;}
+.subtitle{color:#737373;font-size:13px;}
+.toolbar{display:flex;gap:8px;padding:12px;background:white;border-bottom:1px solid #e5e5e5;flex-wrap:wrap;position:sticky;top:66px;z-index:99;}
+.btn{padding:10px 14px;border:1px solid #e5e5e5;background:white;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn:active{transform:scale(.95);}
+.btn-primary{background:#667eea;color:white;border-color:#667eea;}
+.btn.active{background:#667eea;color:white;border-color:#667eea;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px;background:white;border-bottom:1px solid #e5e5e5;}
+.stat-card{background:#fafafa;padding:12px;border-radius:8px;text-align:center;}
+.stat-label{font-size:11px;color:#737373;margin-bottom:4px;}
+.stat-value{font-size:24px;font-weight:600;}
+.content{padding:12px;}
+.card{background:white;border:1px solid #e5e5e5;border-radius:10px;padding:16px;margin-bottom:12px;}
+.card.full{opacity:.6;border-left:3px solid #ef4444;}
+.card.interested{border-left:3px solid #10b981;}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:12px;}
+.card-title{font-size:15px;font-weight:600;flex:1;line-height:1.4;}
+.card-actions{display:flex;gap:12px;flex-shrink:0;}
+label{display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;user-select:none;}
+input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#667eea;}
+.info-item{margin-bottom:10px;}
+.info-label{font-size:11px;font-weight:500;color:#737373;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+input[type=text],input[type=tel],input[type=url],textarea{width:100%;padding:10px;border:1px solid #e5e5e5;border-radius:6px;font-size:14px;background:#fafafa;}
+input:focus,textarea:focus{outline:none;border-color:#667eea;background:white;}
+.phone-display{padding:10px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#15803d;font-weight:500;text-decoration:none;display:block;text-align:center;}
+textarea{resize:vertical;min-height:60px;}
+.hidden{display:none!important;}
+.upload-btn{padding:10px 12px;background:#667eea;color:white;border:none;border-radius:6px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.upload-btn:active{transform:scale(.95);}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px;}
+.gallery-item{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:2px solid #e5e5e5;}
+.gallery-item img{width:100%;height:100%;object-fit:cover;}
+.delete-img{position:absolute;top:4px;right:4px;background:rgba(239,68,68,.9);color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+</style>
+</head>
+
+<body>
+<div class="header">
+<h1>ที่พัก ปิล็อก สังขละบุรี</h1>
+<div class="subtitle">จัดการข้อมูลที่พัก 60 แห่ง</div>
+</div>
+
+<div class="toolbar">
+<button class="btn btn-primary" onclick="save()">💾 บันทึก</button>
+<button class="btn" onclick="exportData()">📤 Export</button>
+<button class="btn" onclick="document.getElementById('importFile').click()">📥 Import</button>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
+<button class="btn" onclick="exp()">📋 CSV</button>
+<div style="flex:1"></div>
+<button class="btn active" id="fAll" onclick="flt('all')">ทั้งหมด</button>
+<button class="btn" id="fAvail" onclick="flt('avail')">ว่าง</button>
+<button class="btn" id="fFull" onclick="flt('full')">เต็ม</button>
+<button class="btn" id="fInt" onclick="flt('int')">จอง</button>
+</div>
+
+<div class="stats">
+<div class="stat-card"><div class="stat-label">ทั้งหมด</div><div class="stat-value" id="sTotal">60</div></div>
+<div class="stat-card"><div class="stat-label">ว่าง</div><div class="stat-value" id="sAvail">60</div></div>
+<div class="stat-card"><div class="stat-label">เต็ม</div><div class="stat-value" id="sFull">0</div></div>
+<div class="stat-card"><div class="stat-label">จอง</div><div class="stat-value" id="sInt">0</div></div>
+</div>
+
+<div class="content">
+<div id="list"></div>
+</div>
+
+<script>
+// ————— LIST ที่พัก —————
+const ACCOMMODATIONS = [
+    {i:1,n:"วิลล่าปิล็อก",p:"092-599-2669"},
+    {i:2,n:"ณัตตะ-เอ่ง-ต่อง-เฮ้าส์",p:"081-942-3057"},
+    {i:3,n:"อื่อต่อง โฮมสเตย์",p:"092-249-1915"},
+    {i:4,n:"บ้านซาคุริต โฮมสเตย์",p:"086-170-3410"},
+    {i:5,n:"ทางช้างเผือกโฮม",p:"099-332-4934"},
+    {i:6,n:"ปิล็อกพอเพลิน",p:"081-995-5466"},
+    {i:7,n:"สวีทอื่อต่อง",p:"085-542-6623"},
+    {i:8,n:"My Home",p:"063-183-4056"},
+    {i:9,n:"กัปตันปิล็อก",p:"089-154-0904"},
+    {i:10,n:"บ้านน้ำทิพย์",p:"065-537-6371"},
+    {i:11,n:"กลิ่นไอหมอก คันทรีวิว",p:"096-343-3299"},
+    {i:12,n:"Hill House My Loft",p:"080-781-5702"},
+    {i:13,n:"บ้านเอี่ยวย้วน โฮมสเตย์",p:"065-693-5930"},
+    {i:14,n:"บ้านเลขที่ 9 โฮมสเตย์",p:"084-077-2181"},
+    {i:15,n:"ปิล็อกเทอเรซ",p:"098-518-7888"},
+    {i:16,n:"มังกรลาบา โฮมสเตย์",p:"097-030-3888"},
+    {i:17,n:"วัน วัน โฮมสเตย์",p:"065-968-5126"},
+    {i:18,n:"บ้านห้องแถวโฮมสเตย์",p:"062-363-9128"},
+    {i:19,n:"บ้านฉันปิล็อกโฮมสเตย์",p:"081-116-4578"},
+    {i:20,n:"ลมหนาวโฮมสเตย์",p:"097-085-8052"},
+    {i:21,n:"บ้านกลางหมอก",p:"084-079-2565"},
+    {i:22,n:"บ้านยายกะเหรี่ยง",p:"095-249-3935"},
+    {i:23,n:"บ้านมุ่หน่อโฮมสเตย์",p:"083-155-0636"},
+    {i:24,n:"อิ่มเดือน เฮ้าส์ & แคมป์ปิ้ง",p:"065-552-7994"},
+    {i:25,n:"ไททาว",p:"061-332-8074"},
+    {i:26,n:"ต้นตาลโฮมสเตย์ @ ปิล็อก",p:"092-988-7339"},
+    {i:27,n:"ปิล็อกโฮมสเตย์",p:"086-798-5863"},
+    {i:28,n:"บ้านเอี่ยวขวัญ โฮมสเตย์",p:"065-693-5930"},
+    {i:29,n:"บ้านมะขี่น",p:"082-089-6391"},
+    {i:30,n:"บ้านตาพล ยายทิพย์ วิลเลจ",p:"098-403-9946"},
+    {i:31,n:"โกโก้ โฮมสเตย์",p:"085-242-3908"},
+    {i:32,n:"Green House",p:"098-554-4742"},
+    {i:33,n:"Were House",p:"080-761-3574"},
+    {i:34,n:"Say Hi",p:"080-056-9734"},
+    {i:35,n:"สุวรรณวงค์โฮมสเตย์",p:"092-549-7098"},
+    {i:36,n:"บ้านริมดอย",p:"088-455-3823"},
+    {i:37,n:"ต้นตาลโฮมสเตย์",p:"092-988-7339"},
+    {i:38,n:"บ้านคุณพ่อ",p:"061-350-8835"},
+    {i:39,n:"บ้านน้ำค้าง",p:"065-690-5848"},
+    {i:40,n:"บ้านป้าปุยมุตลาดคดิ่ง",p:"061-295-6299"},
+    {i:41,n:"ทินกรโฮมสเตย์",p:"086-170-3410"},
+    {i:42,n:"บ้านในเหมืองโฮมสเตย์",p:"063-896-3561"},
+    {i:43,n:"เอกโฮมสเตย์",p:"087-995-4229"},
+    {i:44,n:"อีปุริธารา",p:"095-305-9036"},
+    {i:45,n:"ไม้น้ำ โฮมสเตย์ ปิล็อก",p:"063-662-6397"},
+    {i:46,n:"จะหน่อ โฮมสเตย์",p:"093-127-2361"},
+    {i:47,n:"Vela Pilok โฮมสเตย์",p:"061-041-7371"},
+    {i:48,n:"บ้านปิล๊อกวิว",p:""},
+    {i:49,n:"บ้านอีต่องริมน้ำ",p:""},
+    {i:50,n:"Baan Pilok & Camping",p:""},
+    {i:51,n:"บ้านริมธาร ปิล็อก",p:""},
+    {i:52,n:"บ้านสายหมอก",p:""},
+    {i:53,n:"บ้านพุดซ้อน ปิล็อก",p:""},
+    {i:54,n:"บ้านโอโซน ปิล็อก",p:""},
+    {i:55,n:"บ้านม่านหมอก ปิล็อก",p:""},
+    {i:56,n:"บ้านหนาวจัง โฮมสเตย์",p:""},
+    {i:57,n:"บ้านชมวิว อีต่อง",p:""},
+    {i:58,n:"บ้านพักป้าแป๊ด ปิล็อก",p:""},
+    {i:59,n:"บ้านไม้สน ปิล็อก",p:""},
+    {i:60,n:"บ้านขุนเขา โฮมสเตย์ ปิล็อก",p:""}
+];
+
+let data=[];
+let cf='all';
+
+function init(){
+    const s=localStorage.getItem('pilokData');
+    data=s?JSON.parse(s):ACCOMMODATIONS.map(d=>({...d,p2:'',fb:'',l:'',m:'',f:false,t:false,no:'',imgs:[]}));
+    render();
+}
+
+function save(){
+    localStorage.setItem('pilokData',JSON.stringify(data));
+    saveCloud();
+    alert('✔️ บันทึกแล้ว (Sync แล้ว)');
+}
+
+function exportData(){
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='pilok.json';
+    a.click();
+}
+
+function importData(file){
+    const r=new FileReader();
+    r.onload=e=>{
+        data=JSON.parse(e.target.result);
+        localStorage.setItem('pilokData',JSON.stringify(data));
+        saveCloud();
+        render();
+    };
+    r.readAsText(file);
+}
+
+function upd(i,k,v){
+    const x=data.find(d=>d.i===i);
+    if(x)x[k]=v;
+}
+
+function tgFull(i){const x=data.find(d=>d.i===i);if(x){x.f=!x.f;render();}}
+function tgInt(i){const x=data.find(d=>d.i===i);if(x){x.t=!x.t;render();}}
+
+function flt(f){
+    cf=f;
+    document.querySelectorAll('.toolbar .btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById({all:'fAll',avail:'fAvail',full:'fFull',int:'fInt'}[f]).classList.add('active');
+    render();
+}
+
+function render(){
+    const fd=data.filter(d=>cf==='avail'?!d.f:cf==='full'?d.f:cf==='int'?d.t:true);
+
+    document.getElementById('list').innerHTML=fd.map(d=>{
+        const cls=d.f?'full':d.t?'interested':'';
+        const t1=(d.p||'').replace(/[-\s]/g,'');
+        const t2=(d.p2||'').replace(/[-\s]/g,'');
+
+return `
+<div class="card ${cls}">
+<div class="card-header">
+<div class="card-title">${d.i}. ${d.n}</div>
+<div class="card-actions">
+<label><input type="checkbox" ${d.f?'checked':''} onchange="tgFull(${d.i})"> เต็ม</label>
+<label><input type="checkbox" ${d.t?'checked':''} onchange="tgInt(${d.i})"> จอง</label>
+</div></div>
+
+<div class="info-item">
+<div class="info-label">เบอร์โทร 1</div>
+${d.p ? `<a href="tel:${t1}" class="phone-display">${d.p}</a>` :
+`<input type="tel" placeholder="เบอร์" value="${d.p||''}" onchange="upd(${d.i},'p',this.value)">`}
+</div>
+
+<div class="info-item">
+<div class="info-label">เบอร์โทร 2</div>
+${d.p2 ? `<a href="tel:${t2}" class="phone-display">${d.p2}</a>` :
+`<input type="tel" placeholder="เบอร์สำรอง" value="${d.p2||''}" onchange="upd(${d.i},'p2',this.value)">`}
+</div>
+
+<div class="info-item">
+<div class="info-label">Facebook</div>
+<input type="url" placeholder="https://facebook.com/..." value="${d.fb||''}" onchange="upd(${d.i},'fb',this.value)">
+</div>
+
+<div class="info-item">
+<div class="info-label">LINE ID</div>
+<input type="text" placeholder="@line" value="${d.l||''}" onchange="upd(${d.i},'l',this.value)">
+</div>
+
+<div class="info-item">
+<div class="info-label">Google Maps</div>
+<input type="url" placeholder="https://maps.app.goo.gl/..." value="${d.m||''}" onchange="upd(${d.i},'m',this.value)">
+</div>
+
+<div class="info-item">
+<div class="info-label">หมายเหตุ</div>
+<textarea onchange="upd(${d.i},'no',this.value)">${d.no||''}</textarea>
+</div>
+
+</div>`;
+}).join('');
+
+document.getElementById('sFull').textContent=data.filter(d=>d.f).length;
+document.getElementById('sAvail').textContent=data.length-data.filter(d=>d.f).length;
+document.getElementById('sInt').textContent=data.filter(d=>d.t).length;
+}
+
+// ————— CSV —————
+function exp(){
+let csv='ลำดับ,ชื่อ,สถานะ,จอง,เบอร์1,เบอร์2,Facebook,LINE,Maps,หมายเหตุ\n';
+data.forEach(d=>{
+csv+=`${d.i},"${d.n}",${d.f?'เต็ม':'ว่าง'},${d.t?'จอง':''},"${d.p||''}","${d.p2||''}","${d.fb||''}","${d.l||''}","${d.m||''}","${(d.no||'').replace(/"/g,'""')}"\n`;
+});
+const blob=new Blob([csv],{type:'text/csv'});
+const a=document.createElement('a');
+a.href=URL.createObjectURL(blob);
+a.download='pilok.csv';
+a.click();
+}
+
+// ————— CLOUD (KVDB) —————
+
+const STORAGE_URL = "https://kvdb.io/8QHnHhLujq3rcC6yQbFj9u";
+
+async function loadCloud(){
+try{
+const res=await fetch(`${STORAGE_URL}/pilok-data`);
+if(res.ok){
+const cloud=await res.json();
+data=cloud;
+localStorage.setItem("pilokData",JSON.stringify(data));
+render();
+}}catch(e){}
+}
+
+async function saveCloud(){
+try{
+await fetch(`${STORAGE_URL}/pilok-data`,{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(data)
+});
+}catch(e){}
+}
+
+setInterval(loadCloud,5000);
+
+init();
+
+</script>
 </body>
 </html>
-
