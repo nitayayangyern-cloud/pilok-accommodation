@@ -364,41 +364,24 @@
                         </div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">📞 เบอร์โทร 1</div>
-                        <div style="display:flex;gap:6px;align-items:center">
-                            ${d.p ? `<a href="tel:${tel}" class="phone-display" style="flex:1">${d.p}</a>
-                                     <button class="btn" style="padding:10px" onclick="upd(${d.i},'p','');render()">✏️</button>` : 
-                              `<input type="tel" placeholder="กรอกเบอร์" value="${d.p||''}" onchange="upd(${d.i},'p',this.value)" style="flex:1">`}
-                        </div>
+                        <div class="info-label">📞 เบอร์โทร 1 ${d.p ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'p\',\'\');render()">✏️ แก้ไข</button>' : ''}</div>
+                        ${d.p ? '<a href="tel:'+tel+'" class="phone-display">'+d.p+'</a>' : '<input type="tel" placeholder="กรอกเบอร์" value="'+(d.p||'')+'" onchange="upd('+d.i+',\'p\',this.value)">'}
                     </div>
                     <div class="info-item">
-                        <div class="info-label">📞 เบอร์โทร 2</div>
-                        <div style="display:flex;gap:6px;align-items:center">
-                            ${d.p2 && d.p2.trim() ? `<a href="tel:${tel2}" class="phone-display" style="flex:1">${d.p2}</a>
-                                                      <button class="btn" style="padding:10px" onclick="upd(${d.i},'p2','');render()">✏️</button>` : 
-                              `<input type="tel" placeholder="เบอร์สำรอง" value="${d.p2||''}" onchange="upd(${d.i},'p2',this.value)" style="flex:1">`}
-                        </div>
+                        <div class="info-label">📞 เบอร์โทร 2 ${d.p2 ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'p2\',\'\');render()">✏️ แก้ไข</button>' : ''}</div>
+                        ${d.p2 && d.p2.trim() ? '<a href="tel:'+tel2+'" class="phone-display">'+d.p2+'</a>' : '<input type="tel" placeholder="เบอร์สำรอง" value="'+(d.p2||'')+'" onchange="upd('+d.i+',\'p2\',this.value)">'}
                     </div>
                     <div class="info-item">
-                        <div class="info-label">📘 Facebook</div>
-                        <div style="display:flex;gap:6px">
-                            <input type="url" placeholder="facebook.com/..." value="${d.fb||''}" onchange="upd(${d.i},'fb',this.value)" style="flex:1">
-                            ${d.fb && d.fb.trim() ? `<button class="btn" style="padding:10px" onclick="upd(${d.i},'fb','');render()">×</button>` : ''}
-                        </div>
+                        <div class="info-label">📘 Facebook ${d.fb ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'fb\',\'\');render()">× ลบ</button>' : ''}</div>
+                        <input type="url" placeholder="facebook.com/..." value="${d.fb||''}" onchange="upd(${d.i},'fb',this.value)">
                     </div>
                     <div class="info-item">
-                        <div class="info-label">💬 LINE ID</div>
-                        <div style="display:flex;gap:6px">
-                            <input type="text" placeholder="@lineid" value="${d.l||''}" onchange="upd(${d.i},'l',this.value)" style="flex:1">
-                            ${d.l && d.l.trim() ? `<button class="btn" style="padding:10px" onclick="upd(${d.i},'l','');render()">×</button>` : ''}
-                        </div>
+                        <div class="info-label">💬 LINE ID ${d.l ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'l\',\'\');render()">× ลบ</button>' : ''}</div>
+                        <input type="text" placeholder="@lineid" value="${d.l||''}" onchange="upd(${d.i},'l',this.value)">
                     </div>
                     <div class="info-item">
-                        <div class="info-label">🗺️ Google Maps</div>
-                        <div style="display:flex;gap:6px">
-                            <input type="url" placeholder="https://maps.app.goo.gl/..." value="${d.m||''}" onchange="upd(${d.i},'m',this.value)" style="flex:1">
-                            ${d.m && d.m.trim() ? `<button class="btn" style="padding:10px" onclick="upd(${d.i},'m','');render()">×</button>` : ''}
-                        </div>
+                        <div class="info-label">🗺️ Google Maps ${d.m ? '<button class="btn" style="font-size:10px;padding:4px 8px;margin-left:8px" onclick="upd('+d.i+',\'m\',\'\');render()">× ลบ</button>' : ''}</div>
+                        <input type="url" placeholder="https://maps.app.goo.gl/..." value="${d.m||''}" onchange="upd(${d.i},'m',this.value)">
                     </div>
                     <div class="info-item">
                         <div class="info-label">📝 หมายเหตุ</div>
