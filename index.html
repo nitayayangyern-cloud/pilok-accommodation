@@ -203,7 +203,10 @@
     
     <div class="toolbar">
         <button class="btn btn-primary" onclick="save()">💾 บันทึก</button>
-        <button class="btn" onclick="exp()">📥 CSV</button>
+        <button class="btn" onclick="exportData()">📤 Export</button>
+        <button class="btn" onclick="document.getElementById('importFile').click()">📥 Import</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
+        <button class="btn" onclick="exp()">📋 CSV</button>
         <div style="flex: 1"></div>
         <button class="btn active" id="fAll" onclick="flt('all')">ทั้งหมด</button>
         <button class="btn" id="fAvail" onclick="flt('avail')">ว่าง</button>
@@ -284,6 +287,35 @@
         function save() {
             localStorage.setItem('pilokData', JSON.stringify(data));
             alert('✅ บันทึกแล้ว');
+        }
+        
+        function exportData() {
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `ที่พักปิล็อก_ข้อมูล_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            alert('✅ Export สำเร็จ! ส่งไฟล์ให้เพื่อนเพื่อ Sync ข้อมูล');
+        }
+        
+        function importData(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (confirm(`Import ข้อมูล ${imported.length} รายการ?\n\n⚠️ ข้อมูลเดิมจะถูกแทนที่`)) {
+                        data = imported;
+                        localStorage.setItem('pilokData', JSON.stringify(data));
+                        render();
+                        alert('✅ Import สำเร็จ! ข้อมูล Sync แล้ว');
+                    }
+                } catch (e) {
+                    alert('❌ ไฟล์ไม่ถูกต้อง');
+                }
+            };
+            reader.readAsText(file);
         }
         
         function upd(i, k, v) {
@@ -440,6 +472,8 @@
         
         setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
         init();
+        
+        setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
     </script>
 </body>
 </html>
