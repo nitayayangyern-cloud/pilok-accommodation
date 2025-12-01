@@ -146,6 +146,53 @@
         }
         textarea { resize: vertical; min-height: 60px; }
         .hidden { display: none !important; }
+        .upload-btn {
+            padding: 10px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .upload-btn:active { transform: scale(0.95); }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e5e5;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gallery-item .delete-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -229,7 +276,7 @@
             if (s) {
                 data = JSON.parse(s);
             } else {
-                data = ACCOMMODATIONS.map(d => ({...d, p2:'', fb:'', l:'', m:'', f:false, t:false, no:''}));
+                data = ACCOMMODATIONS.map(d => ({...d, p2:'', fb:'', l:'', m:'', f:false, t:false, no:'', imgs:[]}));
             }
             render();
         }
@@ -309,6 +356,21 @@
                         <div class="info-label">📝 หมายเหตุ</div>
                         <textarea placeholder="ราคา, ติดต่อแล้ว..." onchange="upd(${d.i},'no',this.value)">${d.no||''}</textarea>
                     </div>
+                    <div class="info-item">
+                        <div class="info-label">📷 รูปภาพ (สูงสุด 5 รูป)</div>
+                        <input type="file" id="file-${d.i}" accept="image/*" multiple style="display:none" onchange="uploadImg(${d.i}, this.files)">
+                        <button class="upload-btn" onclick="document.getElementById('file-${d.i}').click()">
+                            📸 เลือกรูป
+                        </button>
+                        <div class="gallery" id="gallery-${d.i}">
+                            ${(d.imgs || []).map((img, idx) => `
+                                <div class="gallery-item">
+                                    <img src="${img}" alt="รูปที่ ${idx + 1}">
+                                    <button class="delete-img" onclick="delImg(${d.i}, ${idx})">×</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
                 </div>`;
             }).join('');
             
@@ -329,6 +391,51 @@
             a.href = URL.createObjectURL(blob);
             a.download = `ที่พักปิล็อก_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
+        }
+        
+        function uploadImg(id, files) {
+            const x = data.find(d => d.i === id);
+            if (!x) return;
+            
+            if (!x.imgs) x.imgs = [];
+            
+            // จำกัด 5 รูป
+            const remaining = 5 - x.imgs.length;
+            if (remaining <= 0) {
+                alert('อัปโหลดได้สูงสุด 5 รูป');
+                return;
+            }
+            
+            const toUpload = Math.min(files.length, remaining);
+            let loaded = 0;
+            
+            for (let i = 0; i < toUpload; i++) {
+                const file = files[i];
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('ไฟล์ต้องไม่เกิน 2MB');
+                    continue;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    x.imgs.push(e.target.result);
+                    loaded++;
+                    if (loaded === toUpload) {
+                        render();
+                        save();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function delImg(id, idx) {
+            const x = data.find(d => d.i === id);
+            if (x && x.imgs) {
+                x.imgs.splice(idx, 1);
+                render();
+                save();
+            }
         }
         
         setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
