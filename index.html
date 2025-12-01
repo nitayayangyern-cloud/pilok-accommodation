@@ -286,7 +286,8 @@
         
         function save() {
             localStorage.setItem('pilokData', JSON.stringify(data));
-            alert('✅ บันทึกแล้ว');
+            saveCloud(); // บันทึกไป Cloud ด้วย
+            alert('✅ บันทึกแล้ว (Sync ทันที)');
         }
         
         function exportData() {
@@ -473,7 +474,51 @@
         setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
         init();
         
-        setInterval(() => localStorage.setItem('pilokData', JSON.stringify(data)), 30000);
+        // ========== AUTO-SYNC REALTIME ==========
+        const DB_URL = 'https://pilok-accommodation-default-rtdb.asia-southeast1.firebasedatabase.app/data.json';
+        
+        // โหลดข้อมูลจาก Cloud
+        async function loadCloud() {
+            try {
+                const res = await fetch(DB_URL);
+                const cloudData = await res.json();
+                if (cloudData && cloudData.length > 0) {
+                    data = cloudData;
+                    render();
+                    console.log('✅ Sync จาก Cloud');
+                }
+            } catch (e) {
+                console.log('ใช้ Local data');
+            }
+        }
+        
+        // บันทึกไป Cloud
+        async function saveCloud() {
+            try {
+                const res = await fetch(DB_URL, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    console.log('✅ Sync ไป Cloud');
+                }
+            } catch (e) {
+                console.log('Sync ล้มเหลว');
+            }
+        }
+        
+        // Auto-load ทุก 10 วินาที
+        setInterval(loadCloud, 10000);
+        
+        // Auto-save ทุก 30 วินาที
+        setInterval(() => {
+            localStorage.setItem('pilokData', JSON.stringify(data));
+            saveCloud();
+        }, 30000);
+        
+        // โหลดครั้งแรก
+        setTimeout(loadCloud, 2000);
     </script>
 </body>
 </html>
